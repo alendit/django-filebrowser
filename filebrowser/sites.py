@@ -12,7 +12,6 @@ from time import time
 from django.shortcuts import render_to_response, HttpResponse
 from django.template import RequestContext as Context
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
-from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django import forms
@@ -172,7 +171,7 @@ def handle_file_upload(path, file, site):
 
 def filebrowser_view(view):
     "Only let staff browse the files"
-    return staff_member_required(never_cache(view))
+    return never_cache(view)
 
 
 class FileBrowserSite(object):
@@ -222,7 +221,7 @@ class FileBrowserSite(object):
             url(r'^delete/$', file_exists(self, path_exists(self, filebrowser_view(self.delete))), name="fb_delete"),
             url(r'^detail/$', file_exists(self, path_exists(self, filebrowser_view(self.detail))), name="fb_detail"),
             url(r'^version/$', file_exists(self, path_exists(self, filebrowser_view(self.version))), name="fb_version"),
-            url(r'^upload_file/$', staff_member_required(csrf_exempt(self._upload_file)), name="fb_do_upload"),
+            url(r'^upload_file/$', csrf_exempt(self._upload_file), name="fb_do_upload"),
         )
         return urlpatterns
 
